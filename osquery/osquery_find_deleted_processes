@@ -1,0 +1,3 @@
+SELECT pid, name, path, cmdline, on_disk 
+FROM processes 
+WHERE on_disk = 0;
