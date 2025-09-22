@@ -195,7 +195,7 @@ Be sure to also go all the way to the end of the process ancestry (all the way a
    FROM processes 
    WHERE on_disk = 0;
    ```
-   You can save this query as a saved query in OSquery Manager so that it's always available without having to copy-pasta.
+   _NOTE: You can save this query as a saved query in OSquery Manager so that it's always available without having to copy-pasta._
 
 This will find running processes that have been deleted from disk but are still running in memory:
 
