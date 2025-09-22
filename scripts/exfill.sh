@@ -61,7 +61,7 @@ for i in {1..3}; do
 done
 
 # Copy C programs over and execute
-/bin/echo "Copying C programs over and executing"
+/bin/echo "Copying binaries over and executing"
 /usr/bin/cp -p $ROOTDIR/files/demo_progs.tar /dev/shm/ &>/dev/null
 /usr/bin/tar xf /dev/shm/demo_progs.tar -C /dev/shm/ &>/dev/null
 sudo /dev/shm/nothing_to_see_here &>/dev/null
