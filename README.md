@@ -105,7 +105,7 @@ NOTE: The binaries (`bin/nothing_to_see_here` and `bin/move_along`) are written 
 
    nothing_to_see_here
    ```sh
-   [ericcobb@ecobb-gcp1-sec bin]$ ./nothing_to_see_here -h
+   [user@host bin]$ ./nothing_to_see_here -h
    Usage:
    ./nothing_to_see_here [program-to-run] [args...]
    ./nothing_to_see_here [flags-for-default]
