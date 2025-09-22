@@ -42,6 +42,36 @@ Sometimes the Eden demos are down, parts of them are broken, or we just want mor
 
 To get a local copy up and running, just clone this repo into a directory on the host where you want to generate some security alerts (ideally, this should be a host running Elastic Agent with the Defend integration).
 
+The project is structured like so:
+```sh
+├── bin                       # Contains the binaries that will trigger alerts from shared memory; will not be use directly
+│   ├── move_along                     
+│   └── nothing_to_see_here
+├── files   
+│   ├── demo_progs.tar        # The tar file that contains binaries in bin/ that will trigger alerts in /dev/shm/
+│   └── eicar_com.zip         # Harmless eicar file that Defend will see as a malicious process
+├── osquery                   # OSquery file(s) that can be used during alert investigation
+│   └── osquery_find_deleted_processes
+├── README.md
+├── response                  # Files that can be executed from the Response Console to show response actions
+│   └── response_file.sh
+├── screenshots
+│   ├── es-sec-demo_alerts_view.png
+│   ├── es-sec-demo_attack_discovery.png
+│   ├── es-sec-demo_building_blocks.png
+│   ├── es-sec-demo_deleted_processes_running.png
+│   ├── es-sec-demo_event_analyzer.png
+│   ├── es-sec-demo_isolate_host.png
+│   ├── es-sec-demo_release_host.png
+│   └── es-sec-demo_remove_command.png
+├── scripts             # The heart of the demo environment
+│   ├── config.sh       # Contains variables used by these scripts
+│   ├── demo_start.sh   # Script (run from local machine) that kicks off all the "malicious" activity by calling exfill.sh
+│   └── exfill.sh       # Does all the "malicious" dirty work
+└── src                 # Source files for the binaries in case you want to modify them to your liking (just remember to re-compile)
+    ├── move_along.c
+    └── nothing_to_see_here.c
+```
 
 ### Prerequisites
 
