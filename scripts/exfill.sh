@@ -1,6 +1,18 @@
 #!/usr/bin/env bash
 
-set -euo pipefail
+set -Eeuo pipefail
+
+# Pretty error reporter
+err_report() {
+  local rc=$?
+  local cmd=${BASH_COMMAND}
+  # Frame 0 is this function, frame 1 is where the error occurred
+  echo "✖ Error $rc at ${BASH_SOURCE[1]}:${BASH_LINENO[0]} in ${FUNCNAME[1]:-main}" >&2
+  echo "  → command: $cmd" >&2
+  exit "$rc"
+}
+trap err_report ERR
+
 
 # Load shared variables from config.sh
 # This expects the config.sh file to be in the same directory as this script
