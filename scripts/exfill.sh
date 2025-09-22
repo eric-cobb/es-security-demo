@@ -47,15 +47,15 @@ if [ "${#missing[@]}" -gt 0 ]; then
 fi
 
 # Generate some random noise for the Event Analyzer view
-/usr/bin/whoami &>/dev/null
+printf "%s" "Who am I? $(/usr/bin/whoami)\n"
 /usr/bin/ls &>/dev/null
 
 # Trigger Account Discovery alerts
 for i in {1..3}; do
   /usr/bin/groups &>/dev/null
   /usr/bin/getent passwd &>/dev/null
-  /bin/cat /etc/sudoers &>/dev/null
-  /bin/cat /etc/shadow &>/dev/null
+  sudo /bin/cat /etc/sudoers &>/dev/null
+  sudo /bin/cat /etc/shadow &>/dev/null
   sleep 3
 done
 
