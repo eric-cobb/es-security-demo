@@ -50,7 +50,7 @@ This repo contains everything you need for it to just _work_, including the bina
 
 ### Installation
 
-_Below is an example of how you can instruct your audience on installing and setting up your app. This template doesn't rely on any external dependencies or services._
+I've tried to make it as painless as possible, but there are still a few manual steps that need to be taken to get this repo operational.
 
 1. Clone the repo
    ```sh
@@ -67,15 +67,15 @@ _Below is an example of how you can instruct your audience on installing and set
    EXFILL_TARGET='' # This is where the scp command will attempt to "exfill" the data; in my environment I have another EC2 instance that I attempt to copy to
    FILE='/dev/shm/totally_not_exfill.tar.gz' # The file that will be "exfilled"
    ```
-5. Copy/move the scripts/demo_start.sh script to your local machine. This is the script that will kick off the whole shebang by ssh-ing into the host where the triggers in this repo live (ideally on a separate EC2 instance, container, whatever where Elastic Agent is running with Defend)
-6. Modify the demo_start.sh script to update three values:
+4. Copy/move the scripts/demo_start.sh script to your local machine. This is the script that will kick off the whole shebang by ssh-ing into the host where the triggers in this repo live (ideally on a separate EC2 instance, container, whatever where Elastic Agent is running with Defend)
+5. Modify the demo_start.sh script to update three values:
    ```sh
    TARGET_HOST='' # The hostname or IP of the host to which this script will attempt to login and start triggering alerts. This should be the same host as where this repo was cloned (i.e. where all the scripts and binaries live).
    ROOTDIR='' # Base directory from which all of these alert triggers will be run on the target host
    SSH_USER='' # This should be the user you have set up to ssh from your local machine (where this demo_kickoff.sh script will be run from) to the TARGET_HOST
    ```
    Of course, you'll need ssh keys configured on both your local machine and the TARGET_HOST machine in order for all of this to work.
-8. Within Elastic Security, you'll need an Agent Policy assigned to an Agent running on the TARGET_HOST machine running the following integrations:
+6. Within Elastic Security, you'll need an Agent Policy assigned to an Agent running on the TARGET_HOST machine running the following integrations:
 
    * Defend
    * Auditd Manager
@@ -101,12 +101,64 @@ _Below is an example of how you can instruct your audience on installing and set
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-Once everything is in place on the TARGET_HOST and the demo_kickoff.sh script is in place on your local machine, the only thing you need to do now (and in the future) for this demo is run the demo_kickoff.sh script:
+NOTE: The binaries (`bin/nothing_to_see_here` and `bin/move_along`) are written to run with default values and arguments, but those can be changed to fit your environment. For usage examples, run:
+
+   nothing_to_see_here
+   ```sh
+   [ericcobb@ecobb-gcp1-sec bin]$ ./nothing_to_see_here -h
+   Usage:
+   ./nothing_to_see_here [program-to-run] [args...]
+   ./nothing_to_see_here [flags-for-default]
+
+   Behavior:
+   • If the first argument starts with '-', arguments are passed to the default program:
+         ./nothing_to_see_here -s 60 -c "/bin/echo hi"  -> runs /dev/shm/move_along with those flags
+   • If the first argument does not start with '-', it is treated as the program to run:
+         ./nothing_to_see_here /usr/bin/echo hello        -> runs /usr/bin/echo hello
+   • If no arguments are given, runs the default program with no args.
+
+   Options:
+   -h, --help   Show this help (for the launcher)
+   ```
+
+   move_along
+   ```sh
+   [user@host bin]$ ./move_along -h
+   usage: ./move_along [-s seconds] [-c "command"]
+
+   Runs a shell command (default is a tar invocation) and then sleeps.
+
+   Options:
+   -s seconds   Sleep duration after the command (default: 10800)
+   -c command   Shell command to execute (default:
+                  "/usr/bin/tar czPf totally_not_exfill.tar.gz /etc/passwd")
+   -h           Show this help and exit
+
+   Examples:
+   ./move_along                      # uses default tar command, then sleeps 3h
+   ./move_along -s 300               # default command, sleep 5 min
+   ./move_along -c "/usr/bin/echo hi"  # custom command, default sleep
+   ```
+
+Once everything is in place on the TARGET_HOST and the demo_start.sh script is in place on your local machine, the only thing you need to do now (and in the future) for this demo is run the demo_kickoff.sh script:
    
    ```sh
-   sh demo_kickoff.sh
+   sh demo_start.sh
    ```
-This will attempt to ssh into the TARGET_HOST, run some commands, and do some things that trigger alerts. On your local machine you'll see the terminal appear to hang while these things are taking place for a few seconds, followed by a ping to the TARGET_HOST. Leave this ping running! You'll want it to show host isolation later.
+This will attempt to ssh into the TARGET_HOST, run some commands, and do some things that trigger alerts. On your local machine you'll see some short output while these actions are taking place, followed by a ping to the TARGET_HOST:
+   ```sh
+   Generating some random noise for the Event Analyzer view
+   Copying C programs over and executing
+   Triggering Indicator Match Detection Rules
+   Triggering Malware alert with EICAR file
+   Triggering Linux system info discovery rule
+   Removing files from /dev/shm
+   PING xxx.xxx.xxx.xxx (xxx.xxx.xxx.xxx): 56 data bytes
+   64 bytes from xxx.xxx.xxx.xxx: icmp_seq=0 ttl=55 time=32.529 ms
+   64 bytes from xxx.xxx.xxx.xxx: icmp_seq=1 ttl=55 time=31.183 ms
+   64 bytes from xxx.xxx.xxx.xxx: icmp_seq=2 ttl=55 time=33.252 ms
+   ```
+Leave this ping running! You'll want it to show host isolation later.
 
 You may need to manually run these two detection rules, as they run once an hour and may not run on their normal schedule before time to give the demo:
 
