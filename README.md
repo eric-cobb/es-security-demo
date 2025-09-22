@@ -62,17 +62,17 @@ I've tried to make it as painless as possible, but there are still a few manual 
    ```
 3. The main `exfill.sh` script sources variables from `scripts/config.sh`. In the `scripts/config.sh` script, modify the following values to mirror your environment:
    ```sh
-   ROOTDIR='' # Base directory from which all of these alert triggers will be run on the target host
-   HOMEDIR='' # This is the base directory from which all of these alert triggers will be run
-   EXFILL_TARGET='' # This is where the scp command will attempt to "exfill" the data; in my environment I have another EC2 instance that I attempt to copy to
+   ROOTDIR=''        # Base directory from which all of these alert triggers will be run on the target host
+   HOMEDIR=''        # This is the base directory from which all of these alert triggers will be run
+   EXFILL_TARGET=''  # This is where the scp command will attempt to "exfill" the data; in my environment I have another EC2 instance that I attempt to copy to
    FILE='/dev/shm/totally_not_exfill.tar.gz' # The file that will be "exfilled"
    ```
 4. Copy/move the `scripts/demo_start.sh` script to your local machine. This is the script that will kick off the whole shebang by ssh-ing into the host where the triggers in this repo live (ideally on a separate EC2 instance, container, whatever where Elastic Agent is running with Defend)
 5. Modify the demo_start.sh script to update three values:
    ```sh
    TARGET_HOST='' # The hostname or IP of the host to which this script will attempt to login and start triggering alerts. This should be the same host as where this repo was cloned (i.e. where all the scripts and binaries live).
-   ROOTDIR='' # Base directory from which all of these alert triggers will be run on the target host
-   SSH_USER='' # This should be the user you have set up to ssh from your local machine (where this demo_kickoff.sh script will be run from) to the TARGET_HOST
+   ROOTDIR=''     # Base directory from which all of these alert triggers will be run on the target host
+   SSH_USER=''    # This should be the user you have set up to ssh from your local machine (where this demo_kickoff.sh script will be run from) to the TARGET_HOST
    ```
    Of course, you'll need ssh keys configured on both your local machine and the TARGET_HOST machine in order for all of this to work.
 6. Within Elastic Security, you'll need an Agent Policy assigned to an Agent running on the TARGET_HOST machine running the following integrations:
