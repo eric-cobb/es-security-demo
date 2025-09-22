@@ -1,7 +1,35 @@
-#!/bin/bash
+#!/usr/bin/env bash
+
+set -euo pipefail
 
 # Load shared variables from config.sh
-source "$(dirname "$0")/config.sh"
+# This expects the config.sh file to be in the same directory as this script
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/.config"
+
+# List of required variables
+required_vars=(
+  ROOTDIR
+  HOMEDIR
+  EXFILL_TARGET
+  FILE
+)
+
+# Check each one
+missing=()
+for var in "${required_vars[@]}"; do
+  if [ -z "${!var:-}" ]; then
+    missing+=("$var")
+  fi
+done
+
+if [ "${#missing[@]}" -gt 0 ]; then
+  echo "Error: The following required variables are not set:" >&2
+  for var in "${missing[@]}"; do
+    echo "  - $var" >&2
+  done
+  exit 1
+fi
 
 # Generate some random noise for the Event Analyzer view
 /usr/bin/whoami &>/dev/null
