@@ -4,6 +4,9 @@ set -euo pipefail
 
 # Load shared variables from config.sh
 # This expects the config.sh file to be in the same directory as this script
+# ****************************************************
+# *** MAKE VARIABLE CHANGES IN config.sh, NOT HERE ***
+# ****************************************************
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/config.sh"
 
