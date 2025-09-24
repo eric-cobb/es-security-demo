@@ -65,7 +65,7 @@ done
 /bin/echo "Copying binaries over and executing"
 /usr/bin/cp -p $TARGET_HOST_ROOTDIR/files/demo_progs.tar /dev/shm/ &>/dev/null
 /usr/bin/tar xf /dev/shm/demo_progs.tar -C /dev/shm/ &>/dev/null
-sudo /dev/shm/nothing_to_see_here &>/dev/null
+sudo /dev/shm/nothing_to_see_here -c "/usr/bin/tar czPf $FILE /etc/passwd" &>/dev/null
 
 # Trigger Inidcator Match Detection Rules
 /bin/echo "Triggering Indicator Match Detection Rules"
@@ -97,7 +97,7 @@ fi
 # in memory with OSquery
 if [ $? -eq 0 ]; then
   /bin/echo "Removing files from /dev/shm"
- /usr/bin/rm -f /dev/shm/{nothing_to_see_here,move_along,demo_progs.tar} &>/dev/null
+  sudo /usr/bin/rm -f /dev/shm/{nothing_to_see_here,move_along,demo_progs.tar} &>/dev/null
 fi 
 
 exit
