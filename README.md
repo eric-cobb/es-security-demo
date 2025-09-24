@@ -149,7 +149,8 @@ This copies the `bin/`, `files/`, `response/`, `scripts/`, and `src/` directorie
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-_NOTE: The binaries (`bin/nothing_to_see_here` and `bin/move_along`) are written to run with default values and arguments, but those can be changed to fit your environment._ For usage examples, run:
+_NOTE: The binaries (`bin/nothing_to_see_here` and `bin/move_along`) are written to run with default values and arguments, but those can be changed to fit your environment._ 
+For usage examples, run:
 
    nothing_to_see_here
    ```sh
