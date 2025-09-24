@@ -139,6 +139,7 @@ Once the ssh users and keys are created and they're placed on the respective Loc
    * Threat Intel URL Indicator Match (optional)
    * Endpoint Security (Elastic Defend) with the following settings:
       * All protection and event collections enabled and in "prevent" mode except "Malicious behavior protections" can be set to "detect" mode.
+         * If you want to use OSquery (see "Usage" section below), "Malicious behavior protections" MUST be in "detect" mode; otherwise, Defend will kill the process that you will search for with OSquery (and thus the OSquery will return no results and you will feel foolish)
 
 3. First let's set up the demo environment with `demo_setup.sh` before kicking off the detection triggers:
 ```sh
