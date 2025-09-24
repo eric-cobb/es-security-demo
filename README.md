@@ -148,7 +148,7 @@ This copies the `bin/`, `files/`, `response/`, `scripts/`, and `src/` directorie
 
 <!-- USAGE EXAMPLES -->
 ## Usage
-### Test
+### Modifying the C code (not required for normal demo operation)
 _NOTE: The binaries (`bin/nothing_to_see_here` and `bin/move_along`) are written to run with default values and arguments, but those can be changed to fit your environment._ 
 
 For usage examples, run:
@@ -189,7 +189,7 @@ For usage examples, run:
    ./move_along -s 300               # default command, sleep 5 min
    ./move_along -c "/usr/bin/echo hi"  # custom command, default sleep
    ```
-
+### Normal Usage
 Kick off the detection trigger activity. This will attempt to ssh into the TARGET_HOST, run some commands, and do some things that trigger alerts. On your local machine you'll see some short output while these actions are taking place, followed by a ping to the TARGET_HOST:
 ```sh
 [user@host es-security-demo]$ sh demo_start.sh
