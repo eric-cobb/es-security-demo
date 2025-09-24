@@ -127,7 +127,6 @@ Once the ssh users and keys are created and they're placed on the respective Loc
    
    You'll also need the following Detection Rules enabled:
    
-   * Endpoint Security (Elastic Defend)
    * Potential Data Exfiltration Through Curl
    * Linux Restricted Shell Breakout via Linux Binary(s)
    * Account or Group Discovery via Built-In Tools
@@ -136,6 +135,8 @@ Once the ssh users and keys are created and they're placed on the respective Loc
    * Binary Executed from Shared Memory Directory
    * Sensitive Files Compression
    * Threat Intel URL Indicator Match (optional)
+   * Endpoint Security (Elastic Defend) with the following settings:
+      * All protection and event collections enabled and in "prevent" mode except "Malicious behavior protections" can be set to "detect" mode.
 
 3. First let's set up the demo environment with `demo_setup.sh` before kicking off the detection triggers:
 ```sh
