@@ -13,6 +13,10 @@ TARGET_HOST_ROOTDIR=''
 # script will use to ssh into the TARGET_HOST from the local machine
 TARGET_HOST_SSH_USER=''
 
+# The local machine private key; used by the demo_setup.sh and demo_start.sh 
+# scripts on local machine to ssh into the TARGET_HOST
+TARGET_HOST_SSH_KEY=''
+
 
 ######################
 ## EXFILL VARIABLES ##
@@ -26,14 +30,6 @@ EXFILL_SSH_USER=''
 # The user account SSH private key on the TARGET_HOST that will
 # be used to scp the 'exfill' data to the EXFILL_TARGET
 EXFILL_SSH_KEY=''
-
-
-#######################
-##  LOCAL VARIABLES  ##
-#######################
-# The local machine private key; used by the demo_setup.sh and demo_start.sh 
-# scripts on local machine to ssh into the TARGET_HOST
-LOCAL_SSH_KEY=''
 
 # Your home directory
 #HOMEDIR=''

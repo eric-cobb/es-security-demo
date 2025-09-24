@@ -13,7 +13,7 @@ required_vars=(
   TARGET_HOST
   TARGET_HOST_ROOTDIR
   TARGET_HOST_SSH_USER
-  LOCAL_SSH_KEY
+  TARGET_HOST_SSH_KEY
 )
 
 # Check each one
@@ -37,7 +37,7 @@ if ! ssh-add -l >/dev/null 2>&1; then
   eval "$(ssh-agent -s)" >/dev/null
 fi
 # Load SSH key
-ssh-add $LOCAL_SSH_KEY >/dev/null 2>&1
+ssh-add $TARGET_HOST_SSH_KEY >/dev/null 2>&1
 
 ssh $TARGET_HOST_SSH_USER@$TARGET_HOST "/usr/bin/find . -exec /bin/sh -c $TARGET_HOST_ROOTDIR/scripts/exfill.sh \; -quit"
 
