@@ -101,6 +101,8 @@ First, we need to set up some SSH keys for the Local Machine, TARGET_HOST, and E
 * TARGET_HOST - ssh key pair (recommend passphrase-less key) for the scp "exfill" of data to the EXFILL_HOST; copy the public key to EXFILL_HOST user
 * EXFILL_HOST - only public key from TARGET_HOST key pair needed here
 
+_NOTE: The ssh user account on the TARGET_HOST needs password-less sudo privs to work properly_
+
 Once the ssh users and keys are created and they're placed on the respective Local, TARGET, and EXFILL hosts, we can proceed.
 
 1. All demo scripts source variables from `scripts/config.sh`. In the `scripts/config.sh` script, modify the following values to mirror your environment:
