@@ -37,7 +37,9 @@ Sometimes the Eden demos are down, parts of them are broken, or we just want mor
 
 ### Prerequisites
 
-_NOTE: skip this section unless you know you need to change the C code within the binaries; this is not necessary for normal use_
+IMPORTANT: This project is intended to be run (and has only been tested) on linux and Mac systems. It is recommended that only linux or Mac systems be used for this project; any other OS (ehm...Windows) will not work.
+
+_NOTE: skip the rest of this section unless you know that you need to change the C code within the binaries; this is not necessary for normal use_
 
 This repo contains everything you need for it to just _work_, including the binaries that will be used to trigger some alerts. That said, the C code for those binaries is also included in the event you want to compile them for yourself (e.g. you don't trust me, you need to run them on an architecture other than x86, etc). If you do want to compile them yourself, you'll need a compiler like GCC.
 1. Install gcc compiler, if desired
