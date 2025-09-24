@@ -1,21 +1,19 @@
 #!/usr/bin/env bash
 
-# The hostname or IP of the host to which this script will attempt 
-# to login and start triggering alerts
-TARGET_HOST='' 
-
-# Base directory from which all of these alert triggers will be 
-#run on the target host
-ROOTDIR='' 
-
-# The user account on the TARGET_HOST
-SSH_USER='' 
+# Load shared variables from config.sh
+# This expects the config.sh file to be in the same directory as this script
+# ****************************************************
+# *** MAKE VARIABLE CHANGES IN config.sh, NOT HERE ***
+# ****************************************************
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/config.sh"
 
 # List of required variables
 required_vars=(
   TARGET_HOST
-  ROOTDIR
-  SSH_USER
+  TARGET_HOST_ROOTDIR
+  TARGET_HOST_SSH_USER
+  LOCAL_SSH_KEY
 )
 
 # Check each one
@@ -34,6 +32,6 @@ if [ "${#missing[@]}" -gt 0 ]; then
   exit 1
 fi
 
-ssh $SSH_USER@$TARGET_HOST "/usr/bin/find . -exec /bin/sh -c $ROOTDIR/scripts/exfill.sh \; -quit"
+ssh -i $LOCAL_SSH_KEY $TARGET_HOST_SSH_USER@$TARGET_HOST "/usr/bin/find . -exec /bin/sh -c $TARGET_HOST_ROOTDIR/scripts/exfill.sh \; -quit"
 
 ping $TARGET_HOST
