@@ -38,6 +38,7 @@ Sometimes the Eden demos are down, parts of them are broken, or we just want mor
 ### Prerequisites
 
 _NOTE: skip this section unless you know you need to change the C code within the binaries; this is not necessary for normal use_
+
 This repo contains everything you need for it to just _work_, including the binaries that will be used to trigger some alerts. That said, the C code for those binaries is also included in the event you want to compile them for yourself (e.g. you don't trust me, you need to run them on an architecture other than x86, etc). If you do want to compile them yourself, you'll need a compiler like GCC.
 1. Install gcc compiler, if desired
    ```sh
@@ -54,8 +55,7 @@ This repo contains everything you need for it to just _work_, including the bina
 <!-- GETTING STARTED -->
 ## Getting Started
 
-To get a local copy up and running, just clone this repo into a directory on your local host.
-Clone the repo
+To get a local copy up and running, just clone this repo into a directory on your local host
 ```sh
 git clone https://github.com/eric-cobb/es-security-demo.git
 ```
@@ -104,7 +104,7 @@ Once the ssh users and keys are created and they're placed on the respective Loc
 
 1. All demo scripts source variables from `scripts/config.sh`. In the `scripts/config.sh` script, modify the following values to mirror your environment:
    ```sh
-   TARGET_HOST=''
+   TARGET_HOST=''          # The hostname or IP of the host to which this script will attempt to login and start triggering alerts
    TARGET_HOST_ROOTDIR=''  # Base directory from which all of these alert triggers will be run on the target host
    TARGET_HOST_SSH_USER='' # The user SSH account on the TARGET_HOST that the demo_start.sh script will use to ssh into the TARGET_HOST from the local machine
    EXFILL_TARGET=''        # Where the scp command will attempt to "exfill" the data; another cloud instance or other host
@@ -141,28 +141,13 @@ Copying files to xxx.xxx.xxx.xxx:/home/user/es-security-demo...Done
 ``` 
 This copies the `bin/`, `files/`, `response/`, `scripts/`, and `src/` directories to the TARGET_HOST
 
-4. Finally, kick off the demo detection triggers:
-```sh
-[user@host es-security-demo]$ sh demo_start.sh
-Enter passphrase for /Users/user/.ssh/id_ecdsa:
-Generating some random noise for the Event Analyzer view...Done
-Triggering Account Discovery alerts...Done
-Copying binaries over and executing...Done
-Triggering Indicator Match Detection Rules...Done
-Triggering Malware alert with EICAR file...Done
-Triggering Linux system info discovery rule...Done
-Copying /dev/shm/totally_not_exfill.tar.gz to xxx.xxx.xxx.xxx...Done
-Removing files from /dev/shm...Done
-PING xxx.xxx.xxx.xxx (xxx.xxx.xxx.xxx): 56 data bytes
-64 bytes from xxx.xxx.xxx.xxx: icmp_seq=0 ttl=55 time=36.273 ms
-64 bytes from xxx.xxx.xxx.xxx: icmp_seq=1 ttl=55 time=36.838 ms
-64 bytes from xxx.xxx.xxx.xxx: icmp_seq=2 ttl=55 time=38.689 ms
+Now we are ready to start causing havoc on the TARGET_HOST!
 ```
 
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-NOTE: The binaries (`bin/nothing_to_see_here` and `bin/move_along`) are written to run with default values and arguments, but those can be changed to fit your environment. For usage examples, run:
+_NOTE: The binaries (`bin/nothing_to_see_here` and `bin/move_along`) are written to run with default values and arguments, but those can be changed to fit your environment._ For usage examples, run:
 
    nothing_to_see_here
    ```sh
@@ -201,24 +186,24 @@ NOTE: The binaries (`bin/nothing_to_see_here` and `bin/move_along`) are written 
    ./move_along -c "/usr/bin/echo hi"  # custom command, default sleep
    ```
 
-Once everything is in place on the TARGET_HOST and the `demo_start.sh` script is in place on your local machine, the only thing you need to do now (and in the future) for this demo is run the `demo_start.sh` script:
-   
-   ```sh
-   sh demo_start.sh
-   ```
-This will attempt to ssh into the TARGET_HOST, run some commands, and do some things that trigger alerts. On your local machine you'll see some short output while these actions are taking place, followed by a ping to the TARGET_HOST:
-   ```sh
-   Generating some random noise for the Event Analyzer view
-   Copying C programs over and executing
-   Triggering Indicator Match Detection Rules
-   Triggering Malware alert with EICAR file
-   Triggering Linux system info discovery rule
-   Removing files from /dev/shm
-   PING xxx.xxx.xxx.xxx (xxx.xxx.xxx.xxx): 56 data bytes
-   64 bytes from xxx.xxx.xxx.xxx: icmp_seq=0 ttl=55 time=32.529 ms
-   64 bytes from xxx.xxx.xxx.xxx: icmp_seq=1 ttl=55 time=31.183 ms
-   64 bytes from xxx.xxx.xxx.xxx: icmp_seq=2 ttl=55 time=33.252 ms
-   ```
+Kick off the detection trigger activity. This will attempt to ssh into the TARGET_HOST, run some commands, and do some things that trigger alerts. On your local machine you'll see some short output while these actions are taking place, followed by a ping to the TARGET_HOST:
+```sh
+[user@host es-security-demo]$ sh demo_start.sh
+Enter passphrase for /Users/user/.ssh/id_ecdsa:
+Generating some random noise for the Event Analyzer view...Done
+Triggering Account Discovery alerts...Done
+Copying binaries over and executing...Done
+Triggering Indicator Match Detection Rules...Done
+Triggering Malware alert with EICAR file...Done
+Triggering Linux system info discovery rule...Done
+Copying /dev/shm/totally_not_exfill.tar.gz to xxx.xxx.xxx.xxx...Done
+Removing files from /dev/shm...Done
+PING xxx.xxx.xxx.xxx (xxx.xxx.xxx.xxx): 56 data bytes
+64 bytes from xxx.xxx.xxx.xxx: icmp_seq=0 ttl=55 time=36.273 ms
+64 bytes from xxx.xxx.xxx.xxx: icmp_seq=1 ttl=55 time=36.838 ms
+64 bytes from xxx.xxx.xxx.xxx: icmp_seq=2 ttl=55 time=38.689 ms
+```
+
 Leave this ping running! You'll want it to show host isolation later.
 
 You may need to manually run these two detection rules, as they run once an hour and may not run on their normal schedule before time to give the demo:
