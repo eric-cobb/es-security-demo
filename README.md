@@ -95,6 +95,7 @@ The project is structured like so:
 The whole demo process is depicted at a high level here:
 ![Project overview](screenshots/es-sec-demo_overview.png)
 
+### Preliminary Setup
 First, we need to set up some SSH keys for the Local Machine, TARGET_HOST, and EXFILL_TARGET. These are needed to allow the demo kick-off from the local machine to the TARGET_HOST, and exfill from the TARGET_HOST to the EXFILL_TARGET:
 
 * Local machine - ssh key pair for the ssh to TARGET_HOST; copy the public key to TARGET_HOST user
