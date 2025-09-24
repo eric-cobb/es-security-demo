@@ -35,12 +35,30 @@ Sometimes the Eden demos are down, parts of them are broken, or we just want mor
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+### Prerequisites
 
+_NOTE: skip this section unless you know you need to change the C code within the binaries; this is not necessary for normal use_
+This repo contains everything you need for it to just _work_, including the binaries that will be used to trigger some alerts. That said, the C code for those binaries is also included in the event you want to compile them for yourself (e.g. you don't trust me, you need to run them on an architecture other than x86, etc). If you do want to compile them yourself, you'll need a compiler like GCC.
+1. Install gcc compiler, if desired
+   ```sh
+   yum install gcc
+   ```
+   Then, from the base directory of the repo, compile the binaries
+   ```sh
+   gcc src/move_along.c -o bin/move_along
+   gcc src/nothing_to_see_here.c -o bin/nothing_to_see_here
+   ```
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- GETTING STARTED -->
 ## Getting Started
 
-To get a local copy up and running, just clone this repo into a directory on the host where you want to generate some security alerts (ideally, this should be a host running Elastic Agent with the Defend integration).
+To get a local copy up and running, just clone this repo into a directory on your local host.
+Clone the repo
+```sh
+git clone https://github.com/eric-cobb/es-security-demo.git
+```
 
 The project is structured like so:
 ```sh
@@ -49,7 +67,7 @@ The project is structured like so:
 │   └── nothing_to_see_here
 ├── files   
 │   ├── demo_progs.tar        # The tar file that contains binaries in bin/ that will trigger alerts in /dev/shm/
-│   └── eicar_com.zip         # Harmless eicar file that Defend will see as a malicious process
+│   └── eicar_com.tar.gz      # Harmless eicar file that Defend will see as a malicious process
 ├── osquery                   # OSquery file(s) that can be used during alert investigation
 │   └── osquery_find_deleted_processes
 ├── README.md
@@ -66,46 +84,36 @@ The project is structured like so:
 │   └── es-sec-demo_remove_command.png
 ├── scripts             # The heart of the demo environment
 │   ├── config.sh       # Contains variables used by these scripts
+|   ├── demo_setup.sh   # The setup script that copies files over to the target host and gets the environment ready to run
 │   ├── demo_start.sh   # Script (run from local machine) that kicks off all the "malicious" activity by calling exfill.sh
 │   └── exfill.sh       # Does all the "malicious" dirty work
 └── src                 # Source files for the binaries in case you want to modify them to your liking (just remember to re-compile)
     ├── move_along.c
     └── nothing_to_see_here.c
 ```
+The whole demo process is depicted at a high level here:
+![Project overview](screenshots/es-sec-demo_overview.png)
 
-### Prerequisites
+First, we need to set up some SSH keys for the Local Machine, TARGET_HOST, and EXFILL_TARGET. These are needed to allow the demo kick-off from the local machine to the TARGET_HOST, and exfill from the TARGET_HOST to the EXFILL_TARGET:
 
-This repo contains everything you need for it to just _work_, including the binaries that will be used to trigger some alerts. That said, the C code for those binaries is also included in the event you want to compile them for yourself (e.g. you don't trust me, you need to run them on an architecture other than x86, etc). If you do want to compile them yourself, you'll need a compiler like GCC.
+* Local machine - ssh key pair for the ssh to TARGET_HOST; copy the public key to TARGET_HOST user
+* TARGET_HOST - ssh key pair (recommend passphrase-less key) for the scp "exfill" of data to the EXFILL_HOST; copy the public key to EXFILL_HOST user
+* EXFILL_HOST - only public key from TARGET_HOST key pair needed here
 
+Once the ssh users and keys are created and they're placed on the respective Local, TARGET, and EXFILL hosts, we can proceed.
 
-### Installation
-
-I've tried to make it as painless as possible, but there are still a few manual steps that need to be taken to get this repo operational.
-
-1. Clone the repo
+1. All demo scripts source variables from `scripts/config.sh`. In the `scripts/config.sh` script, modify the following values to mirror your environment:
    ```sh
-   git clone https://github.com/eric-cobb/es-security-demo.git
+   TARGET_HOST=''
+   TARGET_HOST_ROOTDIR=''  # Base directory from which all of these alert triggers will be run on the target host
+   TARGET_HOST_SSH_USER='' # The user SSH account on the TARGET_HOST that the demo_start.sh script will use to ssh into the TARGET_HOST from the local machine
+   EXFILL_TARGET=''        # Where the scp command will attempt to "exfill" the data; another cloud instance or other host
+   EXFILL_SSH_USER=''      # The user SSH account on the EXFILL_TARGET
+   EXFILL_SSH_KEY=''       # The user account SSH private key on the TARGET_HOST that will be used to scp the 'exfill' data to the EXFILL_TARGET
+   LOCAL_SSH_KEY=''        # The local machine private key; used by the demo_setup.sh and demo_start.sh scripts on local machine to ssh into the TARGET_HOST
+   FILE='/dev/shm/totally_not_exfill.tar.gz' # The file that will be "exfilled." Recommended to leave this as-is unless you _know_ you need to change it
    ```
-2. Install gcc compiler, if desired
-   ```sh
-   yum install gcc
-   ```
-3. The main `exfill.sh` script sources variables from `scripts/config.sh`. In the `scripts/config.sh` script, modify the following values to mirror your environment:
-   ```sh
-   ROOTDIR=''        # Base directory from which all of these alert triggers will be run on the target host
-   HOMEDIR=''        # This is the base directory from which all of these alert triggers will be run
-   EXFILL_TARGET=''  # This is where the scp command will attempt to "exfill" the data; in my environment I have another EC2 instance that I attempt to copy to
-   FILE='/dev/shm/totally_not_exfill.tar.gz' # The file that will be "exfilled"
-   ```
-4. Copy/move the `scripts/demo_start.sh` script to your local machine. This is the script that will kick off the whole shebang by ssh-ing into the host where the triggers in this repo live (ideally on a separate EC2 instance, container, whatever where Elastic Agent is running with Defend)
-5. Modify the demo_start.sh script to update three values:
-   ```sh
-   TARGET_HOST='' # The hostname or IP of the host to which this script will attempt to login and start triggering alerts. This should be the same host as where this repo was cloned (i.e. where all the scripts and binaries live).
-   ROOTDIR=''     # Base directory from which all of these alert triggers will be run on the target host
-   SSH_USER=''    # This should be the user you have set up to ssh from your local machine (where this demo_kickoff.sh script will be run from) to the TARGET_HOST
-   ```
-   Of course, you'll need ssh keys configured on both your local machine and the TARGET_HOST machine in order for all of this to work.
-6. Within Elastic Security, you'll need an Agent Policy assigned to an Agent running on the TARGET_HOST machine running the following integrations:
+2. Within Elastic Security, you'll need an Agent Policy assigned to an Agent running on the TARGET_HOST and EXFILL_HOST machines running the following integrations:
 
    * Defend
    * Auditd Manager
@@ -122,11 +130,34 @@ I've tried to make it as painless as possible, but there are still a few manual 
    * Linux System Information Discovery
    * DLR PPC Indicator Match
    * Binary Executed from Shared Memory Directory
+   * Sensitive Files Compression
    * Threat Intel URL Indicator Match (optional)
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+3. First let's set up the demo environment with `demo_setup.sh` before kicking off the detection triggers:
+```sh
+[user@host es-security-demo]$ sh demo_setup.sh
+Enter passphrase for /Users/user/.ssh/id_ecdsa:
+Copying files to xxx.xxx.xxx.xxx:/home/user/es-security-demo...Done
+``` 
+This copies the `bin/`, `files/`, `response/`, `scripts/`, and `src/` directories to the TARGET_HOST
 
-
+4. Finally, kick off the demo detection triggers:
+```sh
+[user@host es-security-demo]$ sh demo_start.sh
+Enter passphrase for /Users/user/.ssh/id_ecdsa:
+Generating some random noise for the Event Analyzer view...Done
+Triggering Account Discovery alerts...Done
+Copying binaries over and executing...Done
+Triggering Indicator Match Detection Rules...Done
+Triggering Malware alert with EICAR file...Done
+Triggering Linux system info discovery rule...Done
+Copying /dev/shm/totally_not_exfill.tar.gz to xxx.xxx.xxx.xxx...Done
+Removing files from /dev/shm...Done
+PING xxx.xxx.xxx.xxx (xxx.xxx.xxx.xxx): 56 data bytes
+64 bytes from xxx.xxx.xxx.xxx: icmp_seq=0 ttl=55 time=36.273 ms
+64 bytes from xxx.xxx.xxx.xxx: icmp_seq=1 ttl=55 time=36.838 ms
+64 bytes from xxx.xxx.xxx.xxx: icmp_seq=2 ttl=55 time=38.689 ms
+```
 
 <!-- USAGE EXAMPLES -->
 ## Usage
