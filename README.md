@@ -144,8 +144,7 @@ Copying files to xxx.xxx.xxx.xxx:/home/user/es-security-demo...Done
 ``` 
 This copies the `bin/`, `files/`, `response/`, `scripts/`, and `src/` directories to the TARGET_HOST
 
-Now we are ready to start causing havoc on the TARGET_HOST!
-```
+4. Now we are ready to start causing havoc on the TARGET_HOST!
 
 <!-- USAGE EXAMPLES -->
 ## Usage
