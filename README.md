@@ -80,6 +80,7 @@ The project is structured like so:
 │   ├── es-sec-demo_deleted_processes_running.png
 │   ├── es-sec-demo_event_analyzer.png
 │   ├── es-sec-demo_isolate_host.png
+|   ├── es-sec-demo_overview.png
 │   ├── es-sec-demo_release_host.png
 │   └── es-sec-demo_remove_command.png
 ├── scripts             # The heart of the demo environment
