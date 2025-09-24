@@ -39,11 +39,28 @@ fi
 # Load SSH key
 ssh-add $LOCAL_SSH_KEY >/dev/null 2>&1
 
-# Copy the files to the target host
+# Copy the files to the target host IF AND ONLY IF the destination directory does not already exist
+# Check if the destination directory already exists and fail if it does
+/bin/echo -n "Checking if $TARGET_HOST:$TARGET_HOST_ROOTDIR exists..."
+ssh "$TARGET_HOST_SSH_USER@$TARGET_HOST" "DEST=$(printf %q "$TARGET_HOST_ROOTDIR"); 
+  if mkdir \"\$DEST\" 2>/dev/null; then exit 0;
+  elif [ -d \"\$DEST\" ]; then exit 17;
+  else echo 'cannot create dest' >&2; exit 1; fi"
+
+exit_code=$?
+if [ "$exit_code" -eq 17 ]; then
+  printf '\033[1;31mYes - Refusing to copy\033[0m\n' >&2
+  exit 1
+elif [ "$exit_code" -ne 0 ]; then
+  printf 'Remote prep failed (rc=%d) for %s:%s\n' "$exit_code" "$TARGET_HOST" "$TARGET_HOST_ROOTDIR" >&2
+  exit 1
+fi
+
+printf '\033[1;32mNo\033[0m\n'
 /bin/echo -n "Copying files to $TARGET_HOST:$TARGET_HOST_ROOTDIR..."
 tar --no-xattrs -C .. -cf - -- src bin files response scripts/{config.sh,exfill.sh} | \
 ssh $TARGET_HOST_SSH_USER@$TARGET_HOST \
-"set -e; DEST=$(printf %q "$TARGET_HOST_ROOTDIR"); mkdir -p \"\$DEST\"; tar -xf - -C \"\$DEST\""
+"set -e; DEST=$(printf %q "$TARGET_HOST_ROOTDIR"); tar -xf - -C \"\$DEST\""
 
 if [ $? -ne 0 ]; then
   # 'printf' is a shell built-in so this should work without path
