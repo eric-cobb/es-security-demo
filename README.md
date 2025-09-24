@@ -37,7 +37,7 @@ Sometimes the Eden demos are down, parts of them are broken, or we just want mor
 
 ### Prerequisites
 
-IMPORTANT: This project is intended to be run (and has only been tested) on linux and Mac systems. It is recommended that only linux or Mac systems be used for this project; any other OS (ehm...Windows) will not work.
+**IMPORTANT: This project is intended to be run (and has only been tested) on linux and Mac systems. It is recommended that only linux or Mac systems be used for this project; any other OS (ehm...Windows) will not work.**
 
 _NOTE: skip the rest of this section unless you know that you need to change the C code within the binaries; this is not necessary for normal use_
 
